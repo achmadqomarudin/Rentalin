@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "139217912788",
+    "firebase_url": "https://rentalin-d8b40.firebaseio.com",
+    "project_id": "rentalin-d8b40",
+    "storage_bucket": "rentalin-d8b40.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139217912788:android:4cadbc31e0553497",
+        "android_client_info": {
+          "package_name": "com.uas.rentalin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "139217912788-5or4lqphijnmvgnjeokr0seinf6cfa38.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsuQF5rJ87vukC1VqndurldYq9pmWdU7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "139217912788-5or4lqphijnmvgnjeokr0seinf6cfa38.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

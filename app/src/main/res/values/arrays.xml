@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="register_as">
+        <item>Register As :</item>
+        <item>Admin</item>
+        <item>Super User</item>
+        <item>Manager</item>
+        <item>Staff</item>
+    </string-array>
+
+    <string-array name="car_code">
+        <item>Insert Car Code :</item>
+        <item>TYT</item>
+        <item>DHS</item>
+        <item>SZK</item>
+    </string-array>
+
+    <string-array name="type_car">
+        <item>Insert Type Car :</item>
+        <item>Inova</item>
+        <item>Avanza</item>
+        <item>Ferrari</item>
+    </string-array>
+</resources>
