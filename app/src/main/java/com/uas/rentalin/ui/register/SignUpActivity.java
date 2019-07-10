@@ -52,7 +52,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         setView();
         setOnClick();
-        registerAs();
+//        registerAs();
     }
 
     private void setView() {
@@ -62,7 +62,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         etEmail = findViewById(R.id.edit_text_email);
         etPassword = findViewById(R.id.edit_text_password);
         tvLogin = findViewById(R.id.tv_login);
-        spinner = findViewById(R.id.sp_register);
+//        spinner = findViewById(R.id.sp_register);
     }
 
     private void registerAs() {
@@ -91,14 +91,17 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 String username = etUsername.getText().toString();
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-                String role = String.valueOf(spinner.getSelectedItem());
+//                String role = String.valueOf(spinner.getSelectedItem());
 
-                if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
-                    if (role.contentEquals("Register As:")) {
-                        Toast.makeText(this, "Sorry, you must choose account level", Toast.LENGTH_SHORT).show();
-                    } else {
-                        initNewUserInfo(email, name, username, password, role);
-                    }
+                if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)
+                        && !TextUtils.isEmpty(username)) {
+//                    if (role.contentEquals("Register As:")) {
+//                        Toast.makeText(this, "Sorry, you must choose account level", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        initNewUserInfo(email, name, username, password, role);
+//                    }
+                    initNewUserInfo(email, name, username, password/*, role*/);
+
                 } else {
                     Toast.makeText(this, "Sorry, all form must be filled", Toast.LENGTH_SHORT).show();
                 }
@@ -110,8 +113,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    void initNewUserInfo(final String email, final String name, final String username, final String password,
-            final String role) {
+    void initNewUserInfo(final String email, final String name, final String username, final String password/*,
+            final String role*/) {
         mRegProgress.setMessage("Register, please wait...");
         mRegProgress.setCanceledOnTouchOutside(false);
         mRegProgress.show();
@@ -122,14 +125,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 final FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
 
-                    final String id = getDatetime("yyMMddHHmmssSSS");
+//                    final String id = getDatetime("yyMMddHHmmssSSS");
 
                     /* Add HashMap User */
                     Map<String, Object> userMap = new HashMap<>();
                     userMap.put(USER_NAME, name);
                     userMap.put(USER_EMAIL, email);
                     userMap.put(USER_ID, username);
-                    userMap.put(USER_TYPE, role);
 
                     /* Input to Firebase */
                     db.collection("user").document(email).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {

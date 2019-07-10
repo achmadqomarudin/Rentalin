@@ -21,4 +21,10 @@
         <item>Avanza</item>
         <item>Ferrari</item>
     </string-array>
+
+    <string-array name="enginee_car">
+        <item>Insert Type Enginee Car :</item>
+        <item>Automatic</item>
+        <item>Manual</item>
+    </string-array>
 </resources>

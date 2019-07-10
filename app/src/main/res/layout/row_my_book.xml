@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="150dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/iv_my_book"
+        android:background="@color/cardview_dark_background"
+        android:layout_width="150dp"
+        android:layout_height="130dp" />
+
+    <LinearLayout
+        android:paddingLeft="10dp"
+        android:layout_toRightOf="@+id/iv_my_book"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="Name Car :"
+            android:textSize="22sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_name_car"
+            android:textSize="16sp"
+            android:text="Lamborghini"
+            android:maxLines="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/rl_seats"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_seat"
+                    android:src="@drawable/ic_car_seat"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/iv_seat"
+                    android:id="@+id/tv_seats"
+                    android:text="8 seats"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/rl_seats"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_engine"
+                    android:src="@drawable/ic_piston"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/iv_engine"
+                    android:id="@+id/tv_engine"
+                    android:text="Automatic"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:id="@+id/per_day"
+                android:text="Rp. "
+                android:textSize="20sp"
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textSize="24sp"
+                android:layout_toRightOf="@+id/per_day"
+                android:id="@+id/price_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                tools:text="200.000" />
+
+        </RelativeLayout>
+    </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentBottom="true"/>
+</RelativeLayout>

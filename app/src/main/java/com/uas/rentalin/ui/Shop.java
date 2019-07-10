@@ -25,6 +25,9 @@ public class Shop {
     }
 
     public List<Item> getData() {
+
+
+
         return Arrays.asList(
                 new Item(1, "Everyday Candle", "$12.00 USD", "https://article.images.consumerreports.org/prod/content/dam/CRO%20Images%202019/Cars/January/CR-Cars-InlineHero-2019-Acura-ILX-A-Spec-f-1-19"),
                 new Item(2, "Small Porcelain Bowl", "$50.00 USD", "https://amp.businessinsider.com/images/592f4169b74af41b008b5977-750-563.jpg"),

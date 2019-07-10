@@ -26,6 +26,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.uas.rentalin.ui.AdminActivity;
 import com.uas.rentalin.ui.menu.MainActivity;
 import com.uas.rentalin.R;
 import com.uas.rentalin.model.User;
@@ -112,37 +113,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (!task.isSuccessful()) {
                             new ClassHelper().setToast(getApplicationContext(),"Login failed! Please check your email and password!");
                         } else {
-                            loadData(email, password);
+                            loadData(email);
                         }
                     }
                 });
-//        mAuth.signInAnonymously()
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        mRegProgress.dismiss();
-//                        if (!task.isSuccessful()) {
-//                            new ClassHelper().setToast(getApplicationContext(),"Failed to connect to the database!");
-//                            finish();
-//                        } else {
-//                            loadData(email, password);
-//                        }
-//                    }
-//                });
     }
 
-    private void loadData(String email, final String pass) {
-        db.collection("user")
-                .document(email)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Log.e("loadData: onSuccess ", documentSnapshot.toString());
-                        User user = documentSnapshot.toObject(User.class);
-                        if (user != null) {
+    private void loadData(String email) {
+        if (email.contentEquals("admin@gmail.com")) {
 
-//                            if (isTextMatch(TokenUtils.getTokenEncrypt(pass), user.getToken())) {
+            startActivity(new Intent(getApplicationContext(), AdminActivity.class));
+        } else {
+
+            db.collection("user")
+                    .document(email)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            Log.e("loadData: onSuccess ", documentSnapshot.toString());
+                            User user = documentSnapshot.toObject(User.class);
+                            if (user != null) {
+
                                 new PrefManager(getApplicationContext()).setEmail(user.getEmail());
                                 new PrefManager(getApplicationContext()).setName(user.getName());
                                 new PrefManager(getApplicationContext()).setRole(user.getType());
@@ -150,46 +142,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 new ClassHelper().setToast(getApplicationContext(),"Login success!");
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 finish();
-//                            } else {
-//                                new ClassHelper().setToast(getApplicationContext(),"Login failed! Please check your email and password!");
-//                            }
-                        } else {
-                            new ClassHelper().setToast(getApplicationContext(),"Login failed! Your account doesn't exist!");
+                            } else {
+                                new ClassHelper().setToast(getApplicationContext(),"Login failed! Your account doesn't exist!");
+                            }
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        new ClassHelper().setToast(getApplicationContext(),"Login failed! Please try again!");
-                    }
-                });
-//        FirebaseUtils.readData("user", email, new FirebaseCallback() {
-//            @Override
-//            public void onSuccess(final DocumentSnapshot querySnapshots) {
-//                Log.e("loadData: onSuccess ", querySnapshots.toString());
-//                User user = querySnapshots.toObject(User.class);
-//                if (user != null) {
-//                    if (isTextMatch(TokenUtils.getTokenEncrypt(pass), user.getToken())) {
-//                        new PrefManager(getApplicationContext()).setEmail(user.getEmail());
-//                        new PrefManager(getApplicationContext()).setName(user.getName());
-//                        new PrefManager(getApplicationContext()).setRole(user.getType());
-//                        new PrefManager(getApplicationContext()).setPhoto(user.getPhoto());
-//                        new ClassHelper().setToast(getApplicationContext(),"Login success!");
-//                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                    } else {
-//                        new ClassHelper().setToast(getApplicationContext(),"Login failed! Please check your email and password!");
-//                    }
-//                } else {
-//                    new ClassHelper().setToast(getApplicationContext(),"Login failed! Your account doesn't exist!");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(final Exception e) {
-//                new ClassHelper().setToast(getApplicationContext(),"Login failed! Please try again!");
-//            }
-//        });
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            new ClassHelper().setToast(getApplicationContext(),"Login failed! Please try again!");
+                        }
+                    });
+        }
     }
 
     void dialogResetPassword() {
@@ -241,9 +205,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int width = metrics.widthPixels;
         dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
         dialog.show();
-    }
-
-    public static boolean isTextMatch(String text1, String text2) {
-        return Arrays.equals(new String[]{text1}, new String[]{text2});
     }
 }
