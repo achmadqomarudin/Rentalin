@@ -2,12 +2,9 @@ package com.uas.rentalin.ui.menu;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,73 +28,30 @@ import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.uas.rentalin.R;
-import com.uas.rentalin.adapter.ShopAdapter;
-import com.uas.rentalin.model.Item;
 import com.uas.rentalin.ui.BookingActivity;
-import com.uas.rentalin.ui.Shop;
 import com.uas.rentalin.ui.login.LoginActivity;
 import com.uas.rentalin.ui.my_book.MyBookActivity;
 import com.uas.rentalin.util.PrefManager;
-import com.yarolegovich.discretescrollview.DSVOrientation;
-import com.yarolegovich.discretescrollview.DiscreteScrollView;
-import com.yarolegovich.discretescrollview.InfiniteScrollAdapter;
-import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
-import java.util.List;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-public class MainActivity extends AppCompatActivity implements DiscreteScrollView.OnItemChangedListener,
-        View.OnClickListener {
-
-    private List<Item> data;
-    private Shop shop;
-
-    private TextView currentItemName;
-    private TextView currentItemPrice;
-    private ImageView rateItemButton;
-    private DiscreteScrollView itemPicker;
-    private InfiniteScrollAdapter infiniteAdapter;
-
-    //njajal
-    private RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView, rcCarCodeDHS;
     private FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder> adapter;
+    private FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder2> adapter2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        currentItemName = findViewById(R.id.tv_type_car);
-        currentItemPrice = findViewById(R.id.price_day);
-//        rateItemButton = findViewById(R.id.item_btn_rate);
+        getCarCodeDHS();
+        getCarCodeTYT();
+//        getCarCodeSZK();
+    }
 
-        shop = Shop.get();
-        data = shop.getData();
-
-
-
-        itemPicker = findViewById(R.id.item_picker);
-        itemPicker.setOrientation(DSVOrientation.HORIZONTAL);
-        itemPicker.addOnItemChangedListener(this);
-        infiniteAdapter = InfiniteScrollAdapter.wrap(new ShopAdapter(data));
-        itemPicker.setAdapter(infiniteAdapter);
-        itemPicker.setItemTransitionTimeMillis(500);
-        itemPicker.setItemTransformer(new ScaleTransformer.Builder()
-                .setMinScale(0.8f)
-                .build());
-
-        onItemChanged(data.get(0));
-
-        findViewById(R.id.btn_booking).setOnClickListener(this);
-//        findViewById(R.id.item_btn_buy).setOnClickListener(this);
-//        findViewById(R.id.item_btn_comment).setOnClickListener(this);
-
-//        findViewById(R.id.home).setOnClickListener(this);
-//        findViewById(R.id.btn_smooth_scroll).setOnClickListener(this);
-//        findViewById(R.id.btn_transition_time).setOnClickListener(this);
-
-
-        //njajal
-        mRecyclerView = findViewById(R.id.rc_my_book);
+    private void getCarCodeTYT() {
+        mRecyclerView = findViewById(R.id.rc_code_car_tyt);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager( new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
 
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
@@ -111,47 +66,28 @@ public class MainActivity extends AppCompatActivity implements DiscreteScrollVie
             @Override
             protected void onBindViewHolder(@NonNull DataCarViewHolder holder, int position, @NonNull final PojoDataCar model) {
 
-                /*role*/
-                String role = new PrefManager(getApplicationContext()).getRole();
-
                 holder.setNameCar(model.getType_car());
                 holder.setSeats(model.getType_seats());
                 holder.setEnginee(model.getType_enginee());
                 holder.setPriceDay(model.getPrice_day());
+                holder.btnBooking.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(), BookingActivity.class);
+                        i.putExtra("price_day", model.getPrice_day());
+                        i.putExtra("type_seats", model.getType_seats());
+                        i.putExtra("type_enginee", model.getType_enginee());
+                        i.putExtra("url_data", model.getUrl_data());
+                        startActivity(i);
+                    }
+                });
+
 
                 Glide.with(MainActivity.this)
                         .load(model.getUrl_data())
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .into(holder.ivDataCar);
-
-                /**Cek Role*/
-//                if (role.contentEquals("Super User") || role.contentEquals("Manager")) {
-//
-//                    holder.container.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Intent i = new Intent(getApplicationContext(), MyClaimActivity.class);
-//                            i.putExtra("date", model.getDate());
-//                            i.putExtra("invoice_no", model.getInvoice_no());
-//                            i.putExtra("description", model.getDescription());
-//                            i.putExtra("type_of_claim", model.getType_of_claim());
-//                            i.putExtra("amount", model.getAmount());
-//                            i.putExtra("bank_name", model.getBank_name());
-//                            i.putExtra("bank_account", model.getBank_account());
-//                            i.putExtra("attachment", model.getAttachment());
-//                            i.putExtra("url_data", model.getUrl_data());
-//                            i.putExtra("update", model.getUpdate());
-//                            i.putExtra("data_type", model.getData_type());
-//                            i.putExtra("key_project", getIntent().getStringExtra("key_project"));
-//                            i.putExtra("id", model.getId());
-//                            startActivity(i);
-//                        }
-//                    });
-//                } else {
-//                    holder.Layout_hide();
-//                    Toast.makeText(getApplicationContext(), "Sorry, you don't have access", Toast.LENGTH_SHORT).show();
-//                }
             }
 
             @NonNull
@@ -164,55 +100,59 @@ public class MainActivity extends AppCompatActivity implements DiscreteScrollVie
         mRecyclerView.setAdapter(adapter);
     }
 
+    private void getCarCodeDHS() {
+        rcCarCodeDHS = findViewById(R.id.rc_code_car_dhs);
+        rcCarCodeDHS.setNestedScrollingEnabled(false);
+        rcCarCodeDHS.setLayoutManager( new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        Query query = rootRef.collection("admin")/*.document("DHS").collection("data")*/
+                .orderBy(FieldPath.documentId(), Query.Direction.ASCENDING);
+
+        FirestoreRecyclerOptions<PojoDataCar> options = new FirestoreRecyclerOptions.Builder<PojoDataCar>()
+                .setQuery(query, PojoDataCar.class)
+                .build();
+
+        adapter2 = new FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder2>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull DataCarViewHolder2 holder, int position, @NonNull final PojoDataCar model) {
+
+                Toast.makeText(MainActivity.this, "Data DHS : "+ position, Toast.LENGTH_SHORT).show();
+
+//                holder.setNameCar(model.getType_car());
+//                holder.setSeats(model.getType_seats());
+//                holder.setEnginee(model.getType_enginee());
+//                holder.setPriceDay(model.getPrice_day());
+//
+//                Glide.with(MainActivity.this)
+//                        .load(model.getUrl_data())
+//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                        .skipMemoryCache(true)
+//                        .into(holder.ivDataCar);
+            }
+
+            @NonNull
+            @Override
+            public DataCarViewHolder2 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_data_car2, parent, false);
+                return new DataCarViewHolder2(view);
+            }
+        };
+        rcCarCodeDHS.setAdapter(adapter2);
+    }
+
+    private void getCarCodeSZK() {
+
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.item_btn_rate:
-//                int realPosition = infiniteAdapter.getRealPosition(itemPicker.getCurrentItem());
-//                Item current = data.get(realPosition);
-//                shop.setRated(current.getId(), !shop.isRated(current.getId()));
-//                changeRateButtonState(current);
-//                break;
-//            case R.id.home:
-//                finish();
-//                break;
-//            case R.id.btn_transition_time:
-//                DiscreteScrollViewOptions.configureTransitionTime(itemPicker);
-//                break;
             case R.id.btn_booking:
                 Intent i = new Intent(getApplicationContext(), BookingActivity.class);
                 startActivity(i);
                 break;
-            default:
-                showUnsupportedSnackBar();
-                break;
         }
-    }
-
-    private void onItemChanged(Item item) {
-        currentItemName.setText(item.getName());
-        currentItemPrice.setText(item.getPrice());
-//        changeRateButtonState(item);
-    }
-
-//    private void changeRateButtonState(Item item) {
-//        if (shop.isRated(item.getId())) {
-//            rateItemButton.setImageResource(R.drawable.ic_star_black_24dp);
-//            rateItemButton.setColorFilter(ContextCompat.getColor(this, R.color.shopRatedStar));
-//        } else {
-//            rateItemButton.setImageResource(R.drawable.ic_star_border_black_24dp);
-//            rateItemButton.setColorFilter(ContextCompat.getColor(this, R.color.shopSecondary));
-//        }
-//    }
-
-    @Override
-    public void onCurrentItemChanged(@Nullable RecyclerView.ViewHolder viewHolder, int position) {
-        int positionInDataSet = infiniteAdapter.getRealPosition(position);
-        onItemChanged(data.get(positionInDataSet));
-    }
-
-    private void showUnsupportedSnackBar() {
-        Snackbar.make(itemPicker, "Button Clicked", Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -264,8 +204,54 @@ public class MainActivity extends AppCompatActivity implements DiscreteScrollVie
         private LinearLayout container;
         private LinearLayout.LayoutParams params;
         private ImageView ivDataCar;
+        private Button btnBooking;
 
         DataCarViewHolder(View itemView) {
+            super(itemView);
+            view = itemView;
+            ivDataCar = view.findViewById(R.id.iv_car);
+            container = view.findViewById(R.id.container);
+            btnBooking = view.findViewById(R.id.btn_booking);
+            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        /**Hidden row item*/
+        private void Layout_hide() {
+            params.height = 0;
+            //itemView.setLayoutParams(params); //This One.
+            container.setLayoutParams(params);   //Or This one.
+        }
+
+        void setNameCar(String name_car) {
+            TextView tvNameCar = view.findViewById(R.id.tv_type_car);
+            tvNameCar.setText(name_car);
+        }
+
+        void setSeats(String seats) {
+            TextView tvSeats = view.findViewById(R.id.tv_seats);
+            tvSeats.setText(seats);
+        }
+
+        void setEnginee(String enginee) {
+            TextView tvSeats = view.findViewById(R.id.tv_engine);
+            tvSeats.setText(enginee);
+        }
+
+        void setPriceDay(String itemPrice) {
+            TextView tvItemPrice = view.findViewById(R.id.price_day);
+            tvItemPrice.setText(itemPrice);
+        }
+    }
+
+    //njajal2
+    private class DataCarViewHolder2 extends RecyclerView.ViewHolder {
+        private View view;
+        private LinearLayout container;
+        private LinearLayout.LayoutParams params;
+        private ImageView ivDataCar;
+
+        DataCarViewHolder2(View itemView) {
             super(itemView);
             view = itemView;
             ivDataCar = view.findViewById(R.id.iv_car);

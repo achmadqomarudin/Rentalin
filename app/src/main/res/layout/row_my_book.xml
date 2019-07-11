@@ -11,7 +11,6 @@
 
     <ImageView
         android:id="@+id/iv_my_book"
-        android:background="@color/cardview_dark_background"
         android:layout_width="150dp"
         android:layout_height="130dp" />
 
@@ -108,7 +107,7 @@
             <TextView
                 android:textSize="24sp"
                 android:layout_toRightOf="@+id/per_day"
-                android:id="@+id/price_day"
+                android:id="@+id/total_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"

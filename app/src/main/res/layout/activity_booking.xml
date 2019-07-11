@@ -204,15 +204,29 @@
                     android:layout_height="wrap_content" />
             </RelativeLayout>
 
-            <TextView
+            <RelativeLayout
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:id="@+id/tv_total_pay"
-                android:text="500.000"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/rp"
+                    android:text="Rp."
+                    android:textSize="25sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_toRightOf="@+id/rp"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:id="@+id/tv_total_price"
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
 
             <View
                 android:layout_marginTop="20dp"

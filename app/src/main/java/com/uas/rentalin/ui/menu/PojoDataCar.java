@@ -9,10 +9,11 @@ public class PojoDataCar {
     private String type_enginee;
     private String type_seats;
     private String url_data;
+    private String data;
 
     public PojoDataCar() {}
 
-    public PojoDataCar(String attachment, String code_car, String id, String price_day, String type_car, String type_enginee, String type_seats, String url_data) {
+    public PojoDataCar(String attachment, String code_car, String id, String price_day, String type_car, String type_enginee, String type_seats, String url_data, String data) {
         this.attachment = attachment;
         this.code_car = code_car;
         this.id = id;
@@ -21,6 +22,7 @@ public class PojoDataCar {
         this.type_enginee = type_enginee;
         this.type_seats = type_seats;
         this.url_data = url_data;
+        this.data = data;
     }
 
     public String getAttachment() {
@@ -85,5 +87,13 @@ public class PojoDataCar {
 
     public void setUrl_data(String url_data) {
         this.url_data = url_data;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }

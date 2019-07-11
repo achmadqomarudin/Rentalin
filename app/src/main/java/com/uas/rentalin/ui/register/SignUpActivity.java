@@ -52,7 +52,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         setView();
         setOnClick();
-//        registerAs();
     }
 
     private void setView() {
@@ -62,7 +61,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         etEmail = findViewById(R.id.edit_text_email);
         etPassword = findViewById(R.id.edit_text_password);
         tvLogin = findViewById(R.id.tv_login);
-//        spinner = findViewById(R.id.sp_register);
     }
 
     private void registerAs() {
@@ -91,16 +89,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 String username = etUsername.getText().toString();
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-//                String role = String.valueOf(spinner.getSelectedItem());
 
                 if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)
                         && !TextUtils.isEmpty(username)) {
-//                    if (role.contentEquals("Register As:")) {
-//                        Toast.makeText(this, "Sorry, you must choose account level", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        initNewUserInfo(email, name, username, password, role);
-//                    }
-                    initNewUserInfo(email, name, username, password/*, role*/);
+                    initNewUserInfo(email, name, username, password);
 
                 } else {
                     Toast.makeText(this, "Sorry, all form must be filled", Toast.LENGTH_SHORT).show();
@@ -125,8 +117,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 final FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
 
-//                    final String id = getDatetime("yyMMddHHmmssSSS");
-
                     /* Add HashMap User */
                     Map<String, Object> userMap = new HashMap<>();
                     userMap.put(USER_NAME, name);
@@ -149,23 +139,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                     .show();
                         }
                     });
-
-//                    FirebaseUtils.sendData("user", uid, userMap, new FirebaseCallback() {
-//                        @Override
-//                        public void onSuccess(final DocumentSnapshot querySnapshots) {
-//                            mRegProgress.dismiss();
-//                            Toast.makeText(getApplicationContext(), "Register success", Toast.LENGTH_SHORT).show();
-//                            onBackPressed();
-//                        }
-//
-//                        @Override
-//                        public void onFailure(final Exception e) {
-//                            mRegProgress.dismiss();
-//                            Toast.makeText(getApplicationContext(), "Sorry, please try again later...", Toast.LENGTH_LONG)
-//                                    .show();
-//                        }
-//                    });
-                    // User is signed in
                 } else {
                     // User is signed out
                     mRegProgress.dismiss();
@@ -173,10 +146,5 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         });
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    public static String getDatetime(String pattern) {
-        return new SimpleDateFormat(pattern).format(new Date());
     }
 }

@@ -11,11 +11,12 @@ class PojoMyBook {
     private String type_car;
     private String type_seats;
     private String type_enginee;
-    private String price;
+    private String total_price;
+    private String url_data;
 
     public PojoMyBook() {}
 
-    public PojoMyBook(String address, String code_car, String days, String id, String name_tenant, String no_hp, String no_ktp, String type_car, String type_seats, String type_enginee, String price) {
+    public PojoMyBook(String address, String code_car, String days, String id, String name_tenant, String no_hp, String no_ktp, String type_car, String type_seats, String type_enginee, String total_price, String url_data) {
         this.address = address;
         this.code_car = code_car;
         this.days = days;
@@ -26,7 +27,8 @@ class PojoMyBook {
         this.type_car = type_car;
         this.type_seats = type_seats;
         this.type_enginee = type_enginee;
-        this.price = price;
+        this.total_price = total_price;
+        this.url_data = url_data;
     }
 
     public String getAddress() {
@@ -109,11 +111,19 @@ class PojoMyBook {
         this.type_enginee = type_enginee;
     }
 
-    public String getPrice() {
-        return price;
+    public String getTotal_price() {
+        return total_price;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
+    public void setTotal_price(String total_price) {
+        this.total_price = total_price;
+    }
+
+    public String getUrl_data() {
+        return url_data;
+    }
+
+    public void setUrl_data(String url_data) {
+        this.url_data = url_data;
     }
 }

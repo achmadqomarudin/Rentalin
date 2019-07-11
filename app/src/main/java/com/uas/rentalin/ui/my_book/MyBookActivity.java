@@ -8,15 +8,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.uas.rentalin.R;
+import com.uas.rentalin.ui.menu.MainActivity;
 import com.uas.rentalin.util.PrefManager;
 
 public class MyBookActivity extends AppCompatActivity {
@@ -54,35 +58,16 @@ public class MyBookActivity extends AppCompatActivity {
                 holder.setNameCar(model.getType_car());
                 holder.setSeats(model.getType_seats());
                 holder.setEnginee(model.getType_enginee());
-                holder.setItemPrice(model.getPrice());
+                holder.setItemPrice(model.getTotal_price());
 
-                /**Cek Role*/
-//                if (role.contentEquals("Super User") || role.contentEquals("Manager")) {
-//
-//                    holder.container.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Intent i = new Intent(getApplicationContext(), MyClaimActivity.class);
-//                            i.putExtra("date", model.getDate());
-//                            i.putExtra("invoice_no", model.getInvoice_no());
-//                            i.putExtra("description", model.getDescription());
-//                            i.putExtra("type_of_claim", model.getType_of_claim());
-//                            i.putExtra("amount", model.getAmount());
-//                            i.putExtra("bank_name", model.getBank_name());
-//                            i.putExtra("bank_account", model.getBank_account());
-//                            i.putExtra("attachment", model.getAttachment());
-//                            i.putExtra("url_data", model.getUrl_data());
-//                            i.putExtra("update", model.getUpdate());
-//                            i.putExtra("data_type", model.getData_type());
-//                            i.putExtra("key_project", getIntent().getStringExtra("key_project"));
-//                            i.putExtra("id", model.getId());
-//                            startActivity(i);
-//                        }
-//                    });
-//                } else {
-//                    holder.Layout_hide();
-//                    Toast.makeText(getApplicationContext(), "Sorry, you don't have access", Toast.LENGTH_SHORT).show();
-//                }
+                Glide.with(MyBookActivity.this)
+                        .load(model.getUrl_data())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .placeholder(R.drawable.load_place_holder)
+                        .error(R.drawable.place_holder_error)
+                        .centerCrop()
+                        .into(holder.ivMyBook);
             }
 
             @NonNull
@@ -99,20 +84,15 @@ public class MyBookActivity extends AppCompatActivity {
         private View view;
         private LinearLayout container;
         private LinearLayout.LayoutParams params;
+        private ImageView ivMyBook;
 
         MyBookViewHolder(View itemView) {
             super(itemView);
             view = itemView;
+            ivMyBook = view.findViewById(R.id.iv_my_book);
             container = view.findViewById(R.id.container);
             params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-
-        /**Hidden row item*/
-        private void Layout_hide() {
-            params.height = 0;
-            //itemView.setLayoutParams(params); //This One.
-            container.setLayoutParams(params);   //Or This one.
         }
 
         void setNameCar(String name_car) {
@@ -131,7 +111,7 @@ public class MyBookActivity extends AppCompatActivity {
         }
 
         void setItemPrice(String itemPrice) {
-            TextView tvItemPrice = view.findViewById(R.id.price_day);
+            TextView tvItemPrice = view.findViewById(R.id.total_price);
             tvItemPrice.setText(itemPrice);
         }
     }

@@ -16,15 +16,15 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:src="@android:drawable/alert_dark_frame"
+            android:layout_height="150dp"
+            android:src="@drawable/ic_logo"
             tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Welcome to RG9 Virtual Clocking"
+            android:text="Welcome to Rentalin"
             android:textAlignment="center"
             android:textSize="20sp" />
 

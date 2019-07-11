@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,6 +23,7 @@ import com.uas.rentalin.R;
 import com.uas.rentalin.util.ClassHelper;
 import com.uas.rentalin.util.PrefManager;
 
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,11 +35,15 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
     private EditText etNameTenant, etAdress, etNoKtp, etNoHp, etDays;
     public static final String NAME_TENANT = "name_tenant", ADDRESS = "address", NO_KTP = "no_ktp",
-            NO_HP = "no_hp", CODE_CAR = "code_car", TYPE_CAR = "type_car", DAYS = "days", ID = "id";
+            NO_HP = "no_hp", CODE_CAR = "code_car", TYPE_CAR = "type_car", DAYS = "days", ID = "id",
+            TOTAL_PRICE = "total_price", TYPE_SEATS = "type_seats", TYPE_ENGINEE = "type_enginee",
+            URL_DATA = "url_data";
+    private TextView tvTotalPrice;
     private Spinner spCarCode, spTypeCar;
     private ProgressDialog mRegProgress;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
+    int total_price;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +69,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         etDays = findViewById(R.id.et_days);
         spCarCode = findViewById(R.id.sp_car_code);
         spTypeCar = findViewById(R.id.sp_type_car);
+        tvTotalPrice = findViewById(R.id.tv_total_price);
     }
 
     @Override
@@ -109,63 +116,149 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         String code_car = String.valueOf(spCarCode.getSelectedItem());
         String type_car = String.valueOf(spTypeCar.getSelectedItem());
         String days = etDays.getText().toString();
+        String price_day = getIntent().getStringExtra("price_day");
+        String type_seats = getIntent().getStringExtra("type_seats");
+        String type_enginee = getIntent().getStringExtra("type_enginee");
+        String url_data = getIntent().getStringExtra("url_data");
 
-        final Map<String, Object> userMap = new HashMap<>();
-        userMap.put(NAME_TENANT, name_tenant);
-        userMap.put(ADDRESS, address);
-        userMap.put(NO_KTP, no_ktp);
-        userMap.put(NO_HP, no_hp);
-        userMap.put(CODE_CAR, code_car);
-        userMap.put(TYPE_CAR, type_car);
-        userMap.put(DAYS, days);
-        userMap.put(ID, id);
-
-        if (!TextUtils.isEmpty(name_tenant) && !TextUtils.isEmpty(address) && !TextUtils.isEmpty(no_ktp) && !TextUtils.isEmpty(no_hp)
-                && !TextUtils.isEmpty(code_car) && !TextUtils.isEmpty(type_car) && !TextUtils.isEmpty(days)) {
-            if (code_car.contentEquals("Insert Car Code :")) {
-
-                new ClassHelper().setToast(getApplicationContext(), "Sorry, you must choose code car");
-            } else if (type_car.contentEquals("Insert Type Car :")) {
-
-                new ClassHelper().setToast(getApplicationContext(), "Sorry, you must choose type car");
-            } else {
-
-                mRegProgress.setMessage("Loading, please wait...");
-                mRegProgress.setCanceledOnTouchOutside(false);
-                mRegProgress.show();
-
-                new AlertDialog.Builder(this)
-                        .setMessage("Are you sure ?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                db.collection("user").document(email).collection("data").document(id).set(userMap)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                mRegProgress.dismiss();
-                                                new ClassHelper().setToast(getApplicationContext(), "Booking successfully");
-                                                onBackPressed();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                mRegProgress.dismiss();
-                                                new ClassHelper().setToast(getApplicationContext(), "Sorry, please try again later...");
-                                            }
-                                        });
-                            }
-                        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).show();
-            }
-        } else {
+        if (days.length() <= 0) {
             Toast.makeText(this, "Sorry, all form must be filled", Toast.LENGTH_SHORT).show();
+
+        } else if (days.length() >= 5) {
+            total_price = ((Integer.parseInt(price_day) * Integer.parseInt(days)) / 100) * 5;
+            tvTotalPrice.setText(String.valueOf(total_price));
+
+            String total = tvTotalPrice.getText().toString();
+
+            final Map<String, Object> userMap = new HashMap<>();
+            userMap.put(NAME_TENANT, name_tenant);
+            userMap.put(ADDRESS, address);
+            userMap.put(NO_KTP, no_ktp);
+            userMap.put(NO_HP, no_hp);
+            userMap.put(CODE_CAR, code_car);
+            userMap.put(TYPE_CAR, type_car);
+            userMap.put(DAYS, days);
+            userMap.put(TOTAL_PRICE, total);
+            userMap.put(TYPE_SEATS, type_seats);
+            userMap.put(TYPE_ENGINEE, type_enginee);
+            userMap.put(URL_DATA, url_data);
+            userMap.put(ID, id);
+
+            if (!TextUtils.isEmpty(name_tenant) && !TextUtils.isEmpty(address) && !TextUtils.isEmpty(no_ktp) && !TextUtils.isEmpty(no_hp)
+                    && !TextUtils.isEmpty(code_car) && !TextUtils.isEmpty(type_car) && !TextUtils.isEmpty(days)) {
+                if (code_car.contentEquals("Insert Car Code :")) {
+
+                    new ClassHelper().setToast(getApplicationContext(), "Sorry, you must choose code car");
+                } else if (type_car.contentEquals("Insert Type Car :")) {
+
+                    new ClassHelper().setToast(getApplicationContext(), "Sorry, you must choose type car");
+                } else {
+
+                    mRegProgress.setMessage("Loading, please wait...");
+                    mRegProgress.setCanceledOnTouchOutside(false);
+                    mRegProgress.show();
+
+                    new AlertDialog.Builder(BookingActivity.this)
+                            .setMessage("Are you sure ?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    db.collection("user").document(email).collection("data").document(id).set(userMap)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    mRegProgress.dismiss();
+                                                    new ClassHelper().setToast(getApplicationContext(), "Booking successfully");
+                                                    onBackPressed();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    mRegProgress.dismiss();
+                                                    new ClassHelper().setToast(getApplicationContext(), "Sorry, please try again later...");
+                                                }
+                                            });
+                                }
+                            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+                }
+            } else {
+                Toast.makeText(this, "Sorry, all form must be filled", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            total_price = Integer.parseInt(days) * Integer.parseInt(price_day);
+            tvTotalPrice.setText(String.valueOf(total_price));
+
+            String total = tvTotalPrice.getText().toString();
+
+            final Map<String, Object> userMap = new HashMap<>();
+            userMap.put(NAME_TENANT, name_tenant);
+            userMap.put(ADDRESS, address);
+            userMap.put(NO_KTP, no_ktp);
+            userMap.put(NO_HP, no_hp);
+            userMap.put(CODE_CAR, code_car);
+            userMap.put(TYPE_CAR, type_car);
+            userMap.put(DAYS, days);
+            userMap.put(TOTAL_PRICE, total);
+            userMap.put(TYPE_SEATS, type_seats);
+            userMap.put(TYPE_ENGINEE, type_enginee);
+            userMap.put(URL_DATA, url_data);
+            userMap.put(ID, id);
+
+            if (!TextUtils.isEmpty(name_tenant) && !TextUtils.isEmpty(address) && !TextUtils.isEmpty(no_ktp) && !TextUtils.isEmpty(no_hp)
+                    && !TextUtils.isEmpty(code_car) && !TextUtils.isEmpty(type_car) && !TextUtils.isEmpty(days)) {
+                if (code_car.contentEquals("Insert Car Code :")) {
+
+                    new ClassHelper().setToast(getApplicationContext(), "Sorry, you must choose code car");
+                } else if (type_car.contentEquals("Insert Type Car :")) {
+
+                    new ClassHelper().setToast(getApplicationContext(), "Sorry, you must choose type car");
+                } else {
+
+                    mRegProgress.setMessage("Loading, please wait...");
+                    mRegProgress.setCanceledOnTouchOutside(false);
+                    mRegProgress.show();
+
+                    new AlertDialog.Builder(BookingActivity.this)
+                            .setMessage("Are you sure ?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    db.collection("user").document(email).collection("data").document(id).set(userMap)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    mRegProgress.dismiss();
+                                                    new ClassHelper().setToast(getApplicationContext(), "Booking successfully");
+                                                    onBackPressed();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    mRegProgress.dismiss();
+                                                    new ClassHelper().setToast(getApplicationContext(), "Sorry, please try again later...");
+                                                }
+                                            });
+                                }
+                            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+                }
+            } else {
+                Toast.makeText(this, "Sorry, all form must be filled", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

@@ -185,9 +185,9 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
 
             final Map<String, Object> userMap = new HashMap<>();
             userMap.put(TYPE_CAR, name_car);
-            userMap.put(PRICE_DAY, "Rp. "+price_day);
+            userMap.put(PRICE_DAY, price_day);
             userMap.put(ATTACHMENT, attachment);
-            userMap.put(TYPE_SEATS, seats+" seats");
+            userMap.put(TYPE_SEATS, seats);
             userMap.put(TYPE_ENGINEE, sp_type_enginee_car);
             userMap.put(CODE_CAR, sp_code_car);
             userMap.put(ID, id);

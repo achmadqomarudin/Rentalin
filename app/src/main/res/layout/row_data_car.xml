@@ -51,9 +51,18 @@
                         android:layout_centerVertical="true"
                         android:textStyle="bold"
                         android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
                         android:layout_toRightOf="@+id/iv_seat"
                         android:id="@+id/tv_seats"
-                        android:text="8 seats"
+                        android:text="8"
+                        android:textSize="16sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/tv_seats"
+                        android:text="seats"
                         android:textSize="16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
