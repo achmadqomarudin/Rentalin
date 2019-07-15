@@ -52,9 +52,6 @@ public class MyBookActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull MyBookViewHolder holder, int position, @NonNull final PojoMyBook model) {
 
-                /*role*/
-                String role = new PrefManager(getApplicationContext()).getRole();
-
                 holder.setNameCar(model.getType_car());
                 holder.setSeats(model.getType_seats());
                 holder.setEnginee(model.getType_enginee());
@@ -82,17 +79,12 @@ public class MyBookActivity extends AppCompatActivity {
 
     private class MyBookViewHolder extends RecyclerView.ViewHolder {
         private View view;
-        private LinearLayout container;
-        private LinearLayout.LayoutParams params;
         private ImageView ivMyBook;
 
         MyBookViewHolder(View itemView) {
             super(itemView);
             view = itemView;
             ivMyBook = view.findViewById(R.id.iv_my_book);
-            container = view.findViewById(R.id.container);
-            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
         }
 
         void setNameCar(String name_car) {

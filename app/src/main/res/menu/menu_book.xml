@@ -8,10 +8,10 @@
         android:icon="@drawable/ic_booking"
         android:title="My Book" />
 
-    <item
-        android:id="@+id/profile"
-        app:showAsAction="never"
-        android:title="Profile" />
+    <!--<item-->
+        <!--android:id="@+id/profile"-->
+        <!--app:showAsAction="never"-->
+        <!--android:title="Profile" />-->
 
     <item
         android:id="@+id/logout"

@@ -9,7 +9,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rc_my_book"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="50dp"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
