@@ -154,15 +154,15 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     new ClassHelper().setToast(getApplicationContext(), "Sorry, you must choose type car");
                 } else {
 
-                    mRegProgress.setMessage("Loading, please wait...");
-                    mRegProgress.setCanceledOnTouchOutside(false);
-                    mRegProgress.show();
-
-                    new AlertDialog.Builder(BookingActivity.this)
+                    new AlertDialog.Builder(this.getApplicationContext())
                             .setMessage("Are you sure ?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+
+                                    mRegProgress.setMessage("Loading, please wait...");
+                                    mRegProgress.setCanceledOnTouchOutside(false);
+                                    mRegProgress.show();
 
                                     db.collection("user").document(email).collection("data").document(id).set(userMap)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -184,6 +184,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                             }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            mRegProgress.dismiss();
                             dialog.dismiss();
                         }
                     }).show();
@@ -222,15 +223,15 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     new ClassHelper().setToast(getApplicationContext(), "Sorry, you must choose type car");
                 } else {
 
-                    mRegProgress.setMessage("Loading, please wait...");
-                    mRegProgress.setCanceledOnTouchOutside(false);
-                    mRegProgress.show();
-
                     new AlertDialog.Builder(BookingActivity.this)
                             .setMessage("Are you sure ?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+
+                                    mRegProgress.setMessage("Loading, please wait...");
+                                    mRegProgress.setCanceledOnTouchOutside(false);
+                                    mRegProgress.show();
 
                                     db.collection("user").document(email).collection("data").document(id).set(userMap)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -252,6 +253,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                             }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            mRegProgress.dismiss();
                             dialog.dismiss();
                         }
                     }).show();
