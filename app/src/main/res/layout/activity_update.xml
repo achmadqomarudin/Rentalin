@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:layout_height="match_parent"
+    tools:context=".ui.BookingActivity">
+
+    <ScrollView
+        android:padding="10dp"
+        android:id="@+id/sc_registration_booking"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        android:layout_marginBottom="70dp"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/username_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_edittext"
+                android:animateLayoutChanges="false"
+                android:animationCache="false"
+                app:hintEnabled="false">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/et_name_car"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:background="@android:color/transparent"
+                    android:hint="Name Car"
+                    android:inputType="textPersonName" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/no_hp_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_edittext"
+                android:animateLayoutChanges="false"
+                android:animationCache="false"
+                app:hintEnabled="false">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/et_price_per_day"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:background="@android:color/transparent"
+                    android:hint="Price Car per day"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!--<android.support.design.widget.TextInputLayout-->
+            <!--android:layout_marginTop="32dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:background="@drawable/bg_edittext"-->
+            <!--android:animateLayoutChanges="false"-->
+            <!--android:animationCache="false"-->
+            <!--app:hintEnabled="false">-->
+
+            <!--<Spinner-->
+            <!--android:paddingLeft="10dp"-->
+            <!--android:id="@+id/sp_type_car"-->
+            <!--android:entries="@array/type_car"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+            <!--</android.support.design.widget.TextInputLayout>-->
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_marginTop="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_edittext"
+                android:animateLayoutChanges="false"
+                android:animationCache="false"
+                app:hintEnabled="false">
+
+                <Spinner
+                    android:id="@+id/sp_enginee_car"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:entries="@array/enginee_car"
+                    android:paddingLeft="10dp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_marginTop="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_edittext"
+                android:animateLayoutChanges="false"
+                android:animationCache="false"
+                app:hintEnabled="false">
+
+                <Spinner
+                    android:id="@+id/sp_code_car"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:entries="@array/car_code"
+                    android:paddingLeft="10dp" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="70dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/days_input_layout"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_edittext"
+                    android:animateLayoutChanges="false"
+                    android:animationCache="false"
+                    app:hintEnabled="false">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/et_seats"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="15dp"
+                        android:textAlignment="center"
+                        android:paddingRight="15dp"
+                        android:background="@android:color/transparent"
+                        android:hint="1"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:textSize="20sp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/days_input_layout"
+                    android:text="Seats"
+                    android:layout_alignParentBottom="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:text="Insert Image :"
+                android:textSize="18sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <ImageButton
+                    android:id="@+id/btn_add_image"
+                    android:background="@android:color/darker_gray"
+                    android:src="@drawable/ic_add"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp" />
+
+                <TextView
+                    android:layout_toRightOf="@+id/btn_add_image"
+                    android:id="@+id/tv_notification"
+                    android:layout_centerVertical="true"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:text="UPDATE DATA"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btn_update_data"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg_button"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

@@ -1,286 +1,474 @@
 package com.uas.rentalin.ui;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Spinner;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.uas.rentalin.R;
-import com.uas.rentalin.util.ClassHelper;
+import com.uas.rentalin.ui.add_data.AddDataActivity;
+import com.uas.rentalin.ui.login.LoginActivity;
+import com.uas.rentalin.ui.menu.PojoDataCar;
 import com.uas.rentalin.util.PrefManager;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Nullable;
 
 public class AdminActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText etNameCar, etPriceDay, etSeats;
-    private Spinner spTypeEngineeCar, spCarCode;
-    private ImageButton btnAdd;
     private Button btnAddData;
-    TextView tvNotification;
-    Uri pdfUri;
-    ProgressDialog progressDialog;
-    public static final String TYPE_CAR = "type_car", PRICE_DAY = "price_day", TYPE_SEATS = "type_seats",
-            ATTACHMENT = "attachment", ID = "id", URL_DATA = "url_data", TYPE_ENGINEE = "type_enginee",
-            CODE_CAR = "code_car";
-    FirebaseStorage firebaseStorage;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference collectionReference = db.collection("admin");
+    private RecyclerView rcCarCodeTYT, rcCarCodeDHS, rcCarCodeSZK;
+    private FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder> adapterTYT;
+    private FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder2> adapterDHS;
+    private FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder3> adapterSZK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
-        setView();
-        setOnCLick();
-        insertEngineeCar();
-        insertCarCode();
 
-        firebaseStorage = FirebaseStorage.getInstance();
-        db = FirebaseFirestore.getInstance().collection("admin").getFirestore();
+        setView();
+        setOnClick();
+
+        getCarCodeTYT();
+        getCarCodeDHS();
+        getCarCodeSZK();
     }
 
     private void setView() {
-        btnAdd = findViewById(R.id.btn_add_image);
-        tvNotification = findViewById(R.id.tv_notification);
-        etNameCar = findViewById(R.id.et_name_car);
-        etPriceDay = findViewById(R.id.et_price_per_day);
-        etSeats = findViewById(R.id.et_seats);
         btnAddData = findViewById(R.id.btn_add_data);
-        spTypeEngineeCar = findViewById(R.id.sp_enginee_car);
-        spCarCode = findViewById(R.id.sp_code_car);
     }
 
-    private void setOnCLick() {
+    private void setOnClick() {
         btnAddData.setOnClickListener(this);
-        btnAdd.setOnClickListener(this);
     }
 
-    private void insertEngineeCar() {
-        List<String> list = new ArrayList<>();
-        list.add("Insert Type Enginee Car :");
-        list.add("Automatic");
-        list.add("Manual");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spTypeEngineeCar.setAdapter(dataAdapter);
+    private void getCarCodeTYT() {
+        rcCarCodeTYT = findViewById(R.id.rc_code_car_tyt);
+        rcCarCodeTYT.setHasFixedSize(true);
+        rcCarCodeTYT.setLayoutManager( new LinearLayoutManager(AdminActivity.this, LinearLayoutManager.HORIZONTAL, false));
+
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        Query query = rootRef.collection("admin").document("TYT").collection("data")
+                .orderBy(FieldPath.documentId(), Query.Direction.ASCENDING);
+
+        FirestoreRecyclerOptions<PojoDataCar> options = new FirestoreRecyclerOptions.Builder<PojoDataCar>()
+                .setQuery(query, PojoDataCar.class)
+                .build();
+
+        adapterTYT = new FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull DataCarViewHolder holder, int position, @NonNull final PojoDataCar model) {
+
+                holder.setNameCar(model.getType_car());
+                holder.setSeats(model.getType_seats());
+                holder.setEnginee(model.getType_enginee());
+                holder.setPriceDay(model.getPrice_day());
+                holder.btnUpdateData.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                        rootRef.collection("admin").document("TYT").collection("data")
+                                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                        for (QueryDocumentSnapshot querySnapshot: queryDocumentSnapshots) {
+                                            String id = querySnapshot.getId();
+                                            String uid = model.getId();
+                                            if (id.contentEquals(uid)) {
+                                                Intent i = new Intent(getApplicationContext(), UpdateActivity.class);
+                                                i.putExtra("id", model.getId());
+                                                i.putExtra("name_car", model.getType_car());
+                                                i.putExtra("type_seat", model.getType_seats());
+                                                i.putExtra("type_enginee", model.getType_enginee());
+                                                i.putExtra("price", model.getPrice_day());
+                                                startActivity(i);
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                });
+
+                holder.btnDeleteData.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                        rootRef.collection("admin").document("TYT").collection("data")
+                                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                        for (QueryDocumentSnapshot querySnapshot: queryDocumentSnapshots) {
+                                            String id = querySnapshot.getId();
+                                            String uid = model.getId();
+                                            if (id.contentEquals(uid)) {
+                                                rootRef.collection("admin").document("TYT").collection("data").document(id).delete();
+                                                Toast.makeText(AdminActivity.this, "delete successfully", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                });
+
+                Glide.with(AdminActivity.this)
+                        .load(model.getUrl_data())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .error(R.drawable.place_holder_error)
+                        .placeholder(R.drawable.load_place_holder)
+                        .into(holder.ivDataCar);
+            }
+
+            @NonNull
+            @Override
+            public DataCarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_data_admin, parent, false);
+                return new DataCarViewHolder(view);
+            }
+        };
+        rcCarCodeTYT.setAdapter(adapterTYT);
     }
 
-    private void insertCarCode() {
-        List<String> list = new ArrayList<>();
-        list.add("Insert Car Code :");
-        list.add("TYT");
-        list.add("DHS");
-        list.add("SZK");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCarCode.setAdapter(dataAdapter);
+    private void getCarCodeDHS() {
+        rcCarCodeDHS = findViewById(R.id.rc_code_car_dhs);
+        rcCarCodeDHS.setNestedScrollingEnabled(false);
+        rcCarCodeDHS.setLayoutManager( new LinearLayoutManager(AdminActivity.this, LinearLayoutManager.HORIZONTAL, false));
+
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        Query query = rootRef.collection("admin").document("DHS").collection("data")
+                .orderBy(FieldPath.documentId(), Query.Direction.ASCENDING);
+
+        FirestoreRecyclerOptions<PojoDataCar> options = new FirestoreRecyclerOptions.Builder<PojoDataCar>()
+                .setQuery(query, PojoDataCar.class)
+                .build();
+
+        adapterDHS = new FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder2>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull DataCarViewHolder2 holder, int position, @NonNull final PojoDataCar model) {
+
+                holder.setNameCar(model.getType_car());
+                holder.setSeats(model.getType_seats());
+                holder.setEnginee(model.getType_enginee());
+                holder.setPriceDay(model.getPrice_day());
+                holder.btnUpdateData.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(), BookingActivity.class);
+                        i.putExtra("price_day", model.getPrice_day());
+                        i.putExtra("type_seats", model.getType_seats());
+                        i.putExtra("type_enginee", model.getType_enginee());
+                        i.putExtra("url_data", model.getUrl_data());
+                        startActivity(i);
+                    }
+                });
+
+                holder.btnDeleteData.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                        rootRef.collection("admin").document("TYT").collection("data")
+                                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                        for (QueryDocumentSnapshot querySnapshot: queryDocumentSnapshots) {
+                                            String id = querySnapshot.getId();
+                                            String uid = model.getId();
+                                            if (id.contentEquals(uid)) {
+                                                rootRef.collection("admin").document("DHS").collection("data").document(id).delete();
+                                                Toast.makeText(AdminActivity.this, "delete successfully", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                });
+
+                Glide.with(AdminActivity.this)
+                        .load(model.getUrl_data())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .error(R.drawable.place_holder_error)
+                        .placeholder(R.drawable.load_place_holder)
+                        .into(holder.ivDataCar);
+            }
+
+            @NonNull
+            @Override
+            public DataCarViewHolder2 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_data_admin, parent, false);
+                return new DataCarViewHolder2(view);
+            }
+        };
+        rcCarCodeDHS.setAdapter(adapterDHS);
+    }
+
+    private void getCarCodeSZK() {
+        rcCarCodeSZK = findViewById(R.id.rc_code_car_szk);
+        rcCarCodeSZK.setHasFixedSize(true);
+        rcCarCodeSZK.setLayoutManager( new LinearLayoutManager(AdminActivity.this, LinearLayoutManager.HORIZONTAL, false));
+
+        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+        Query query = rootRef.collection("admin").document("SZK").collection("data")
+                .orderBy(FieldPath.documentId(), Query.Direction.ASCENDING);
+
+        FirestoreRecyclerOptions<PojoDataCar> options = new FirestoreRecyclerOptions.Builder<PojoDataCar>()
+                .setQuery(query, PojoDataCar.class)
+                .build();
+
+        adapterSZK = new FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder3>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull DataCarViewHolder3 holder, int position, @NonNull final PojoDataCar model) {
+
+                holder.setNameCar(model.getType_car());
+                holder.setSeats(model.getType_seats());
+                holder.setEnginee(model.getType_enginee());
+                holder.setPriceDay(model.getPrice_day());
+                holder.btnUpdateData.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(), BookingActivity.class);
+                        i.putExtra("price_day", model.getPrice_day());
+                        i.putExtra("type_seats", model.getType_seats());
+                        i.putExtra("type_enginee", model.getType_enginee());
+                        i.putExtra("url_data", model.getUrl_data());
+                        startActivity(i);
+                    }
+                });
+
+                holder.btnDeleteData.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                        rootRef.collection("admin").document("TYT").collection("data")
+                                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                        for (QueryDocumentSnapshot querySnapshot: queryDocumentSnapshots) {
+                                            String id = querySnapshot.getId();
+                                            String uid = model.getId();
+                                            if (id.contentEquals(uid)) {
+                                                rootRef.collection("admin").document("SZK").collection("data").document(id).delete();
+                                                Toast.makeText(AdminActivity.this, "delete successfully", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                });
+
+                Glide.with(AdminActivity.this)
+                        .load(model.getUrl_data())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .error(R.drawable.place_holder_error)
+                        .placeholder(R.drawable.load_place_holder)
+                        .into(holder.ivDataCar);
+            }
+
+            @NonNull
+            @Override
+            public DataCarViewHolder3 onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_data_admin, viewGroup, false);
+                return new DataCarViewHolder3(view);
+            }
+        };
+        rcCarCodeSZK.setAdapter(adapterSZK);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_add_image:
-                addDataImage();
+            case R.id.btn_booking:
+                Intent i = new Intent(getApplicationContext(), BookingActivity.class);
+                startActivity(i);
                 break;
             case R.id.btn_add_data:
-                postData();
+                Intent a = new Intent(getApplicationContext(), AddDataActivity.class);
+                startActivity(a);
                 break;
         }
     }
 
-    private void addDataImage() {
-        if (ContextCompat.checkSelfPermission(AdminActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            selectImage();
-        } else {
-            ActivityCompat.requestPermissions(AdminActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
-        }
-    }
-
-    private void selectImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 86);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_book, menu);
+        return true;
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 9 && grantResults[0]==PackageManager.PERMISSION_GRANTED) {
-            selectImage();
-        } else {
-            Toast.makeText(this, "please provide permission...", Toast.LENGTH_SHORT).show();
-        }
-    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 86 && resultCode == RESULT_OK && data!= null) {
-            pdfUri = data.getData();
-            tvNotification.setText(data.getData().getLastPathSegment());
-        } else {
-            Toast.makeText(this, "Please select a file...", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * post data
-     **/
-    private void postData() {
-
-        String name_car = etNameCar.getText().toString();
-        String price_day = etPriceDay.getText().toString();
-        String attachment = tvNotification.getText().toString();
-        String seats = etSeats.getText().toString();
-        String sp_type_enginee_car = String.valueOf(spTypeEngineeCar.getSelectedItem());
-        String sp_code_car = String.valueOf(spCarCode.getSelectedItem());
-
-        if (!TextUtils.isEmpty(name_car) && !TextUtils.isEmpty(price_day) && !TextUtils.isEmpty(attachment)
-                && !TextUtils.isEmpty(seats) && !TextUtils.isEmpty(sp_type_enginee_car)
-                && !TextUtils.isEmpty(sp_code_car)) {
-
-            final String id = getDatetime("yyMMddHHmmssSSS");
-
-            if (pdfUri!=null)
-                uploadFile(pdfUri, id);
-            else
-                Toast.makeText(this, "Select a file...", Toast.LENGTH_SHORT).show();
-
-            final Map<String, Object> userMap = new HashMap<>();
-            userMap.put(TYPE_CAR, name_car);
-            userMap.put(PRICE_DAY, price_day);
-            userMap.put(ATTACHMENT, attachment);
-            userMap.put(TYPE_SEATS, seats);
-            userMap.put(TYPE_ENGINEE, sp_type_enginee_car);
-            userMap.put(CODE_CAR, sp_code_car);
-            userMap.put(ID, id);
-
-            collectionReference.document(sp_code_car).collection("data").document(id).set(userMap)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            etNameCar.setText(null);
-                            etPriceDay.setText(null);
-                            tvNotification.setText(null);
-                            etSeats.setText(null);
-                            new ClassHelper().setToast(getApplicationContext(), "Success uploading data");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    new ClassHelper().setToast(getApplicationContext(), "Failed uploading data");
-                }
-            });
-        } else {
-            new ClassHelper().setToast(getApplicationContext(), "Sorry, all form must be filled");
-        }
-    }
-
-    private void uploadFile(Uri pdfUri, final String id) {
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setTitle("Uploading file...");
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setProgress(0);
-        progressDialog.show();
-
-        final String fileName = System.currentTimeMillis()+"";
-
-        final StorageReference storageReference = firebaseStorage.getReference();
-        storageReference.child("Uploads").child(fileName).putFile(pdfUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                        storageReference.child("Uploads").child(fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                new AlertDialog.Builder(this)
+                        .setMessage("Are you sure want to logout?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onSuccess(Uri uri) {
-
-                                final String url = uri.toString();
-                                final String uuiid = id;
-                                final String code_car = String.valueOf(spCarCode.getSelectedItem());
-
-                                collectionReference.document(code_car).collection("data").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                                        for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots) {
-
-                                            String uid = documentSnapshot.getId();
-
-                                            if (uid.contentEquals(uuiid)) {
-
-                                                String url_data = url;
-
-                                                    final Map<String, Object> userMap = new HashMap<>();
-                                                    userMap.put(URL_DATA, url_data);
-
-                                                    db.collection("admin").document(code_car).collection("data").document(uid).update(userMap);
-
-                                            }
-                                        }
-                                    }
-                                });
-                                progressDialog.dismiss();
+                            public void onClick(DialogInterface dialog, int which) {
+                                new PrefManager(getApplicationContext()).setEmail("");
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
                             }
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                Log.e("loadData: onFailure", e.getMessage());
-                progressDialog.dismiss();
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
-                int currentProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                progressDialog.setProgress(currentProgress);
-            }
-        });
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+                break;
+        }
+        return true;
     }
 
-    @SuppressLint("SimpleDateFormat")
-    public static String getDatetime(String pattern) {
-        return new SimpleDateFormat(pattern).format(new Date());
+    /**ViewHolder Car TYT*/
+    private class DataCarViewHolder extends RecyclerView.ViewHolder {
+        private View view;
+        private ImageView ivDataCar;
+        private Button btnUpdateData, btnDeleteData;
+
+        DataCarViewHolder(View itemView) {
+            super(itemView);
+            view = itemView;
+            ivDataCar = view.findViewById(R.id.iv_car);
+            btnUpdateData = view.findViewById(R.id.btn_update_data);
+            btnDeleteData = view.findViewById(R.id.btn_delete_data);
+        }
+
+        void setNameCar(String name_car) {
+            TextView tvNameCar = view.findViewById(R.id.tv_type_car);
+            tvNameCar.setText(name_car);
+        }
+
+        void setSeats(String seats) {
+            TextView tvSeats = view.findViewById(R.id.tv_seats);
+            tvSeats.setText(seats);
+        }
+
+        void setEnginee(String enginee) {
+            TextView tvSeats = view.findViewById(R.id.tv_engine);
+            tvSeats.setText(enginee);
+        }
+
+        void setPriceDay(String itemPrice) {
+            TextView tvItemPrice = view.findViewById(R.id.price_day);
+            tvItemPrice.setText(itemPrice);
+        }
+    }
+
+    /**ViewHolder Car DHS*/
+    private class DataCarViewHolder2 extends RecyclerView.ViewHolder {
+        private View view;
+        private ImageView ivDataCar;
+        private Button btnUpdateData, btnDeleteData;
+
+        DataCarViewHolder2(View itemView) {
+            super(itemView);
+            view = itemView;
+            ivDataCar = view.findViewById(R.id.iv_car);
+            btnUpdateData = view.findViewById(R.id.btn_update_data);
+            btnDeleteData = view.findViewById(R.id.btn_delete_data);
+        }
+
+        void setNameCar(String name_car) {
+            TextView tvNameCar = view.findViewById(R.id.tv_type_car);
+            tvNameCar.setText(name_car);
+        }
+
+        void setSeats(String seats) {
+            TextView tvSeats = view.findViewById(R.id.tv_seats);
+            tvSeats.setText(seats);
+        }
+
+        void setEnginee(String enginee) {
+            TextView tvSeats = view.findViewById(R.id.tv_engine);
+            tvSeats.setText(enginee);
+        }
+
+        void setPriceDay(String itemPrice) {
+            TextView tvItemPrice = view.findViewById(R.id.price_day);
+            tvItemPrice.setText(itemPrice);
+        }
+    }
+
+    /**ViewHolder Car SZK*/
+    private class DataCarViewHolder3 extends RecyclerView.ViewHolder {
+        private View view;
+        private ImageView ivDataCar;
+        private Button btnUpdateData, btnDeleteData;
+
+        DataCarViewHolder3(View itemView) {
+            super(itemView);
+            view = itemView;
+            ivDataCar = view.findViewById(R.id.iv_car);
+            btnUpdateData = view.findViewById(R.id.btn_update_data);
+            btnDeleteData = view.findViewById(R.id.btn_delete_data);
+        }
+
+        void setNameCar(String name_car) {
+            TextView tvNameCar = view.findViewById(R.id.tv_type_car);
+            tvNameCar.setText(name_car);
+        }
+
+        void setSeats(String seats) {
+            TextView tvSeats = view.findViewById(R.id.tv_seats);
+            tvSeats.setText(seats);
+        }
+
+        void setEnginee(String enginee) {
+            TextView tvSeats = view.findViewById(R.id.tv_engine);
+            tvSeats.setText(enginee);
+        }
+
+        void setPriceDay(String itemPrice) {
+            TextView tvItemPrice = view.findViewById(R.id.price_day);
+            tvItemPrice.setText(itemPrice);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapterTYT.startListening();
+        adapterDHS.startListening();
+        adapterSZK.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (adapterTYT != null || adapterDHS != null || adapterSZK != null) {
+            adapterTYT.stopListening();
+            adapterDHS.stopListening();
+            adapterSZK.stopListening();
+        }
     }
 }

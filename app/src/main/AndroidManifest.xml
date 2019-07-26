@@ -14,10 +14,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.UpdateActivity"></activity>
+        <activity android:name=".ui.add_data.AddDataActivity" />
         <activity android:name=".ui.AdminActivity" />
-        <activity android:name=".ui.my_book.MyBookActivity"
+        <activity
+            android:name=".ui.my_book.MyBookActivity"
             android:parentActivityName=".ui.menu.MainActivity" />
-        <activity android:name=".ui.BookingActivity"
+        <activity
+            android:name=".ui.BookingActivity"
             android:parentActivityName=".ui.menu.MainActivity" />
         <activity
             android:name=".ui.login.LoginActivity"
