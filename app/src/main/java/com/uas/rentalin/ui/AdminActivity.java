@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 import com.uas.rentalin.R;
 import com.uas.rentalin.ui.add_data.AddDataActivity;
 import com.uas.rentalin.ui.login.LoginActivity;
@@ -44,6 +45,7 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
     private FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder> adapterTYT;
     private FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder2> adapterDHS;
     private FirestoreRecyclerAdapter<PojoDataCar, DataCarViewHolder3> adapterSZK;
+    FirebaseStorage firebaseStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,8 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
 
         setView();
         setOnClick();
+
+        firebaseStorage = FirebaseStorage.getInstance();
 
         getCarCodeTYT();
         getCarCodeDHS();
@@ -105,6 +109,9 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
                                                 i.putExtra("type_seat", model.getType_seats());
                                                 i.putExtra("type_enginee", model.getType_enginee());
                                                 i.putExtra("price", model.getPrice_day());
+                                                i.putExtra("car_code", model.getCode_car());
+                                                i.putExtra("attachment", model.getAttachment());
+                                                i.putExtra("url_data", model.getUrl_data());
                                                 startActivity(i);
                                             }
                                         }
@@ -177,12 +184,29 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
                 holder.btnUpdateData.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(), BookingActivity.class);
-                        i.putExtra("price_day", model.getPrice_day());
-                        i.putExtra("type_seats", model.getType_seats());
-                        i.putExtra("type_enginee", model.getType_enginee());
-                        i.putExtra("url_data", model.getUrl_data());
-                        startActivity(i);
+                        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                        rootRef.collection("admin").document("DHS").collection("data")
+                                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                        for (QueryDocumentSnapshot querySnapshot: queryDocumentSnapshots) {
+                                            String id = querySnapshot.getId();
+                                            String uid = model.getId();
+                                            if (id.contentEquals(uid)) {
+                                                Intent i = new Intent(getApplicationContext(), UpdateActivity.class);
+                                                i.putExtra("id", model.getId());
+                                                i.putExtra("name_car", model.getType_car());
+                                                i.putExtra("type_seat", model.getType_seats());
+                                                i.putExtra("type_enginee", model.getType_enginee());
+                                                i.putExtra("price", model.getPrice_day());
+                                                i.putExtra("car_code", model.getCode_car());
+                                                i.putExtra("attachment", model.getAttachment());
+                                                i.putExtra("url_data", model.getUrl_data());
+                                                startActivity(i);
+                                            }
+                                        }
+                                    }
+                                });
                     }
                 });
 
@@ -250,12 +274,29 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
                 holder.btnUpdateData.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(), BookingActivity.class);
-                        i.putExtra("price_day", model.getPrice_day());
-                        i.putExtra("type_seats", model.getType_seats());
-                        i.putExtra("type_enginee", model.getType_enginee());
-                        i.putExtra("url_data", model.getUrl_data());
-                        startActivity(i);
+                        final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                        rootRef.collection("admin").document("SZK").collection("data")
+                                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                        for (QueryDocumentSnapshot querySnapshot: queryDocumentSnapshots) {
+                                            String id = querySnapshot.getId();
+                                            String uid = model.getId();
+                                            if (id.contentEquals(uid)) {
+                                                Intent i = new Intent(getApplicationContext(), UpdateActivity.class);
+                                                i.putExtra("id", model.getId());
+                                                i.putExtra("name_car", model.getType_car());
+                                                i.putExtra("type_seat", model.getType_seats());
+                                                i.putExtra("type_enginee", model.getType_enginee());
+                                                i.putExtra("price", model.getPrice_day());
+                                                i.putExtra("car_code", model.getCode_car());
+                                                i.putExtra("attachment", model.getAttachment());
+                                                i.putExtra("url_data", model.getUrl_data());
+                                                startActivity(i);
+                                            }
+                                        }
+                                    }
+                                });
                     }
                 });
 

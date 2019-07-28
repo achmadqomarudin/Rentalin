@@ -101,24 +101,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="32dp"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/bg_edittext"
-                android:animateLayoutChanges="false"
-                android:animationCache="false"
-                app:hintEnabled="false">
-
-                <Spinner
-                    android:id="@+id/sp_code_car"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:entries="@array/car_code"
-                    android:paddingLeft="10dp" />
-
-            </android.support.design.widget.TextInputLayout>
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
