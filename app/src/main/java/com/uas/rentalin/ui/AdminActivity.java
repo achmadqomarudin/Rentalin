@@ -304,7 +304,7 @@ public class AdminActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onClick(View v) {
                         final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-                        rootRef.collection("admin").document("TYT").collection("data")
+                        rootRef.collection("admin").document("SZK").collection("data")
                                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                     @Override
                                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
